@@ -1,8 +1,8 @@
 package org.liveSense.service.markdown;
 
-import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyOption;
@@ -10,17 +10,15 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.liveSense.core.Configurator;
-
 import org.osgi.service.component.ComponentContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.pegdown.Extensions;
 import org.pegdown.LinkRenderer;
 import org.pegdown.Parser;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ToHtmlSerializer;
 import org.pegdown.ast.RootNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** 
  * Markdown service
@@ -29,12 +27,12 @@ import org.pegdown.ast.RootNode;
 @Service(value = MarkdownService.class)
 @Properties(value={
 		@Property(name="service.vendor", value="org.liveSense"),
-	    @Property(name = MarkdownServiceImpl.PARAM_EXTENSIONS_TYPE, value = MarkdownServiceImpl.DEFAULT_EXTENSIONS_TYPE, label = "%markdown.extensions.type.name", description = "%markdown.extensions.type.description",
-	    		options = {
-	    	    @PropertyOption(name = MarkdownServiceImpl.PARAM_VALUE_EXTENSIONS_TYPE_ALL, value = MarkdownServiceImpl.PARAM_VALUE_EXTENSIONS_TYPE_ALL),
-	    	    @PropertyOption(name = MarkdownServiceImpl.PARAM_VALUE_EXTENSIONS_TYPE_NONE, value = MarkdownServiceImpl.PARAM_VALUE_EXTENSIONS_TYPE_NONE),
-	    	    @PropertyOption(name = MarkdownServiceImpl.PARAM_VALUE_EXTENSIONS_TYPE_CUSTOM, value = MarkdownServiceImpl.PARAM_VALUE_EXTENSIONS_TYPE_CUSTOM)
-	    }),
+		@Property(name = MarkdownServiceImpl.PARAM_EXTENSIONS_TYPE, value = MarkdownServiceImpl.DEFAULT_EXTENSIONS_TYPE, label = "%markdown.extensions.type.name", description = "%markdown.extensions.type.description",
+		options = {
+				@PropertyOption(name = MarkdownServiceImpl.PARAM_VALUE_EXTENSIONS_TYPE_ALL, value = MarkdownServiceImpl.PARAM_VALUE_EXTENSIONS_TYPE_ALL),
+				@PropertyOption(name = MarkdownServiceImpl.PARAM_VALUE_EXTENSIONS_TYPE_NONE, value = MarkdownServiceImpl.PARAM_VALUE_EXTENSIONS_TYPE_NONE),
+				@PropertyOption(name = MarkdownServiceImpl.PARAM_VALUE_EXTENSIONS_TYPE_CUSTOM, value = MarkdownServiceImpl.PARAM_VALUE_EXTENSIONS_TYPE_CUSTOM)
+		}),
 		@Property(name=MarkdownServiceImpl.PARAM_EXTENSIONS_ABBREVIATIONS, label = "%markdown.extensions.abbreviations.name", description = "%markdown.extensions.abbreviations.description", boolValue = MarkdownServiceImpl.DEFAULT_EXTENSIONS_ABBREVIATIONS),
 		@Property(name=MarkdownServiceImpl.PARAM_EXTENSIONS_AUTOLINKS, label = "%markdown.extensions.autolinks.name", description = "%markdown.extensions.autolinks.description", boolValue = MarkdownServiceImpl.DEFAULT_EXTENSIONS_AUTOLINKS),
 		@Property(name=MarkdownServiceImpl.PARAM_EXTENSIONS_DEFINITIONS, label = "%markdown.extensions.definitions.name", description = "%markdown.extensions.definitions.description", boolValue = MarkdownServiceImpl.DEFAULT_EXTENSIONS_DEFINITIONS),
@@ -64,19 +62,19 @@ public class MarkdownServiceImpl implements MarkdownService {
 	public static final String PARAM_VALUE_EXTENSIONS_TYPE_NONE = "None - Standard Markdown";
 	public static final String PARAM_VALUE_EXTENSIONS_TYPE_ALL = "All - All extensions listed below";
 	public static final String PARAM_VALUE_EXTENSIONS_TYPE_CUSTOM = "Custom - Use the checked extensions below";
-	
+
 	public static final String PARAM_EXTENSIONS_TYPE = "markdown.extensions.type";
 	public static final String DEFAULT_EXTENSIONS_TYPE = PARAM_VALUE_EXTENSIONS_TYPE_ALL;
-	
+
 	public static final String PARAM_EXTENSIONS_SMARTS = "markdown.extensions.smart";
 	public static final boolean DEFAULT_EXTENSIONS_SMARTS = false;
-	
+
 	public static final String PARAM_EXTENSIONS_QUOTES = "markdown.extensions.quotes";
 	public static final boolean DEFAULT_EXTENSIONS_QUOTES = false;
 
 	public static final String PARAM_EXTENSIONS_SMARTYPANTS = "markdown.extensions.smartypants";
 	public static final boolean DEFAULT_EXTENSIONS_SMARTYPANTS = false;
-	
+
 	public static final String PARAM_EXTENSIONS_ABBREVIATIONS = "markdown.extensions.abbreviations";
 	public static final boolean DEFAULT_EXTENSIONS_ABBREVIATIONS = false;
 
@@ -107,8 +105,8 @@ public class MarkdownServiceImpl implements MarkdownService {
 	public static final String PARAM_EXTENSIONS_SUPPRESS_ALL_HTML = "markdown.extensions.suppressallhtml";
 	public static final boolean DEFAULT_EXTENSIONS_SUPPRESS_ALL_HTML = false;
 
-    	@Reference
-    	Configurator configurator;
+	@Reference
+	Configurator configurator;
 
 	/**
 	 * Activates this component.
@@ -123,51 +121,52 @@ public class MarkdownServiceImpl implements MarkdownService {
 	 */
 	@Activate
 	protected void activate(ComponentContext componentContext) throws Exception {
-        extensions_type = PropertiesUtil.toString(componentContext.getProperties().get(PARAM_EXTENSIONS_TYPE), DEFAULT_EXTENSIONS_TYPE);		
+		extensions_type = PropertiesUtil.toString(componentContext.getProperties().get(PARAM_EXTENSIONS_TYPE), DEFAULT_EXTENSIONS_TYPE);		
 		if (extensions_type == PARAM_VALUE_EXTENSIONS_TYPE_ALL) {
 			extensions = Extensions.ALL;
 		} else
-		if (extensions_type == PARAM_VALUE_EXTENSIONS_TYPE_NONE) {
-			extensions = Extensions.NONE;
-		} else
-		if (extensions_type == PARAM_VALUE_EXTENSIONS_TYPE_CUSTOM) {
-			extensions = Extensions.NONE;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_ABBREVIATIONS), DEFAULT_EXTENSIONS_ABBREVIATIONS))
-				extensions = extensions & Extensions.ABBREVIATIONS;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_AUTOLINKS), DEFAULT_EXTENSIONS_AUTOLINKS))
-				extensions = extensions & Extensions.AUTOLINKS;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_DEFINITIONS), DEFAULT_EXTENSIONS_DEFINITIONS))
-				extensions = extensions & Extensions.DEFINITIONS;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_FENCED), DEFAULT_EXTENSIONS_FENCED))
-				extensions = extensions & Extensions.FENCED_CODE_BLOCKS;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_HARDWRAPS), DEFAULT_EXTENSIONS_HARDWRAPS))
-				extensions = extensions & Extensions.HARDWRAPS;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_QUOTES), DEFAULT_EXTENSIONS_QUOTES))
-				extensions = extensions & Extensions.QUOTES;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_SMARTS), DEFAULT_EXTENSIONS_SMARTS))
-				extensions = extensions & Extensions.SMARTS;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_SMARTYPANTS), DEFAULT_EXTENSIONS_SMARTYPANTS))
-				extensions = extensions & Extensions.SMARTYPANTS;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_SUPPRESS_ALL_HTML), DEFAULT_EXTENSIONS_SUPPRESS_ALL_HTML))
-				extensions = extensions & Extensions.SUPPRESS_ALL_HTML;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_SUPPRESS_HTML_BLOCKS), DEFAULT_EXTENSIONS_SUPPRESS_HTML_BLOCKS))
-				extensions = extensions & Extensions.SUPPRESS_HTML_BLOCKS;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_SUPPRESS_INLINE_HTML), DEFAULT_EXTENSIONS_SUPPRESS_INLINE_HTML))
-				extensions = extensions & Extensions.SUPPRESS_INLINE_HTML;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_TABLES), DEFAULT_EXTENSIONS_TABLES))
-				extensions = extensions & Extensions.TABLES;
-			if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_WIKILINKS), DEFAULT_EXTENSIONS_WIKILINKS))
-				extensions = extensions & Extensions.WIKILINKS;
-		};
-        
-		log.info("PegDown parser init start");
-		try {
-			default_processor = new PegDownProcessor();
-			log.info("PegDown parser successfully initializated!");
-		} catch (Exception ex) {
-			log.error("Error on creating PegDown parser", ex);
-			throw new Exception(ex.getMessage());
-		}
+			if (extensions_type == PARAM_VALUE_EXTENSIONS_TYPE_NONE) {
+				extensions = Extensions.NONE;
+			} else
+				if (extensions_type == PARAM_VALUE_EXTENSIONS_TYPE_CUSTOM) {
+					extensions = Extensions.NONE;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_ABBREVIATIONS), DEFAULT_EXTENSIONS_ABBREVIATIONS))
+						extensions = extensions & Extensions.ABBREVIATIONS;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_AUTOLINKS), DEFAULT_EXTENSIONS_AUTOLINKS))
+						extensions = extensions & Extensions.AUTOLINKS;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_DEFINITIONS), DEFAULT_EXTENSIONS_DEFINITIONS))
+						extensions = extensions & Extensions.DEFINITIONS;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_FENCED), DEFAULT_EXTENSIONS_FENCED))
+						extensions = extensions & Extensions.FENCED_CODE_BLOCKS;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_HARDWRAPS), DEFAULT_EXTENSIONS_HARDWRAPS))
+						extensions = extensions & Extensions.HARDWRAPS;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_QUOTES), DEFAULT_EXTENSIONS_QUOTES))
+						extensions = extensions & Extensions.QUOTES;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_SMARTS), DEFAULT_EXTENSIONS_SMARTS))
+						extensions = extensions & Extensions.SMARTS;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_SMARTYPANTS), DEFAULT_EXTENSIONS_SMARTYPANTS))
+						extensions = extensions & Extensions.SMARTYPANTS;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_SUPPRESS_ALL_HTML), DEFAULT_EXTENSIONS_SUPPRESS_ALL_HTML))
+						extensions = extensions & Extensions.SUPPRESS_ALL_HTML;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_SUPPRESS_HTML_BLOCKS), DEFAULT_EXTENSIONS_SUPPRESS_HTML_BLOCKS))
+						extensions = extensions & Extensions.SUPPRESS_HTML_BLOCKS;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_SUPPRESS_INLINE_HTML), DEFAULT_EXTENSIONS_SUPPRESS_INLINE_HTML))
+						extensions = extensions & Extensions.SUPPRESS_INLINE_HTML;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_TABLES), DEFAULT_EXTENSIONS_TABLES))
+						extensions = extensions & Extensions.TABLES;
+					if (PropertiesUtil.toBoolean(componentContext.getProperties().get(PARAM_EXTENSIONS_WIKILINKS), DEFAULT_EXTENSIONS_WIKILINKS))
+						extensions = extensions & Extensions.WIKILINKS;
+				};
+
+				log.info("PegDown parser init start");
+				try {
+					default_processor = new PegDownProcessor();
+					log.info("PegDown parser successfully initializated!");
+				} catch (Exception ex) {
+					log.error("Error on creating PegDown parser", ex);
+					throw new Exception(ex.getMessage());
+				}
+
 	}
 
 	@Deactivate
@@ -176,87 +175,87 @@ public class MarkdownServiceImpl implements MarkdownService {
 	}
 
 	/**
-     * Gives the bundle's default processor.
-     * 
-     * IMPORTANT: not thread safe! Use it only when you can provide thread safety!
-     *  
-     */	  
+	 * Gives the bundle's default processor.
+	 * 
+	 * IMPORTANT: not thread safe! Use it only when you can provide thread safety!
+	 *  
+	 */	  
 	public PegDownProcessor getDefaultProcessor() {
 		return default_processor;
 	}
-	
+
 	/**
-     * Creates a new processor instance using the enabled extensions by OSGi framework's property
-     */	  
+	 * Creates a new processor instance using the enabled extensions by OSGi framework's property
+	 */	  
 	public PegDownProcessor getProcessor() {
 		PegDownProcessor processor = new PegDownProcessor(extensions);
 		return processor;
 	}
-	
+
 	/**
-     * Creates a new processor instance with the given {@link org.pegdown.Extensions}.
-     *
-     * @param options the flags of the extensions to enable as a bitmask
-     */
-    public PegDownProcessor getProcessor(int options) {
-    	PegDownProcessor processor = new PegDownProcessor(options);
-    	return processor;
-    }
-    
-    /**
-     * Creates a new processor instance using the given Parser and tabstop width.
-     *
-     * @param parser the parser instance to use
-     */    
-    public PegDownProcessor getProcessor(Parser parser) {
-    	PegDownProcessor processor = new PegDownProcessor(parser);
-    	return processor;
-    }
-    
-    /**
-     * Converts the given markdown source to HTML with a new processor (thread safe!)
-     *
-     * @param markdownSource the markdown source to convert
-     * @return the HTML
-     */    
-    public String markdownToHtml(String markdownSource)	{
-    	PegDownProcessor processor = getProcessor();
-    	return processor.markdownToHtml(markdownSource.toCharArray());
-    }
-    
-    /**
-     * Converts the given markdown source to HTML.
-     *
-     * @param markdownSource the markdown source to convert
-     * @param linkRenderer the LinkRenderer to use
-     * @return the HTML
-     */    
-    public String markdownToHtml(String markdownSource, LinkRenderer linkRenderer) {
-    	PegDownProcessor processor = getProcessor();
-    	return processor.markdownToHtml(markdownSource.toCharArray(), linkRenderer);
-    }
-    
-    /**
-     * Converts the given markdown source to HTML.
-     *
-     * @param markdownSource the markdown source to convert
-     * @return the HTML
-     */    
-    public String markdownToHtml(char[] markdownSource) {
-    	PegDownProcessor processor = getProcessor();
-    	return processor.markdownToHtml(markdownSource, new LinkRenderer());
-    }
-    
-    /**
-     * Converts the given markdown source to HTML.
-     *
-     * @param markdownSource the markdown source to convert
-     * @param linkRenderer the LinkRenderer to use
-     * @return the HTML
-     */    
-    public String markdownToHtml(char[] markdownSource, LinkRenderer linkRenderer) {
-    	PegDownProcessor processor = getProcessor();
-    	RootNode astRoot = processor.parseMarkdown(markdownSource);
-    	return new ToHtmlSerializer(linkRenderer).toHtml(astRoot);
-    }
+	 * Creates a new processor instance with the given {@link org.pegdown.Extensions}.
+	 *
+	 * @param options the flags of the extensions to enable as a bitmask
+	 */
+	public PegDownProcessor getProcessor(int options) {
+		PegDownProcessor processor = new PegDownProcessor(options);
+		return processor;
+	}
+
+	/**
+	 * Creates a new processor instance using the given Parser and tabstop width.
+	 *
+	 * @param parser the parser instance to use
+	 */    
+	public PegDownProcessor getProcessor(Parser parser) {
+		PegDownProcessor processor = new PegDownProcessor(parser);
+		return processor;
+	}
+
+	/**
+	 * Converts the given markdown source to HTML with a new processor (thread safe!)
+	 *
+	 * @param markdownSource the markdown source to convert
+	 * @return the HTML
+	 */    
+	public String markdownToHtml(String markdownSource)	{
+		PegDownProcessor processor = getProcessor();
+		return processor.markdownToHtml(markdownSource.toCharArray());
+	}
+
+	/**
+	 * Converts the given markdown source to HTML.
+	 *
+	 * @param markdownSource the markdown source to convert
+	 * @param linkRenderer the LinkRenderer to use
+	 * @return the HTML
+	 */    
+	public String markdownToHtml(String markdownSource, LinkRenderer linkRenderer) {
+		PegDownProcessor processor = getProcessor();
+		return processor.markdownToHtml(markdownSource.toCharArray(), linkRenderer);
+	}
+
+	/**
+	 * Converts the given markdown source to HTML.
+	 *
+	 * @param markdownSource the markdown source to convert
+	 * @return the HTML
+	 */    
+	public String markdownToHtml(char[] markdownSource) {
+		PegDownProcessor processor = getProcessor();
+		return processor.markdownToHtml(markdownSource, new LinkRenderer());
+	}
+
+	/**
+	 * Converts the given markdown source to HTML.
+	 *
+	 * @param markdownSource the markdown source to convert
+	 * @param linkRenderer the LinkRenderer to use
+	 * @return the HTML
+	 */    
+	public String markdownToHtml(char[] markdownSource, LinkRenderer linkRenderer) {
+		PegDownProcessor processor = getProcessor();
+		RootNode astRoot = processor.parseMarkdown(markdownSource);
+		return new ToHtmlSerializer(linkRenderer).toHtml(astRoot);
+	}
 }
