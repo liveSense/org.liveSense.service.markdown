@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-/*
- *  Copyright 2012 Janos Dios <janos.dios@allretailconsulting.com>.
- *
- *	All Rights Reserved!
- *
- */
+	/*
+	* Copyright 2012 Janos Dios <janos.dios@allretailconsulting.com>.
+	*
+	* All Rights Reserved!
+	*
+	*/
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-  	<parent>
-      	<groupId>com.github.livesense</groupId>
+	<parent>
+		<groupId>com.github.livesense</groupId>
 		<artifactId>org.liveSense.parent</artifactId>
-      	<version>1-SNAPSHOT</version>
-  	</parent>
+		<version>2-SNAPSHOT</version>
+		<relativePath>../org.liveSense.parent</relativePath>
+	</parent>
 
 	<artifactId>org.liveSense.service.markdown</artifactId>
 	<packaging>bundle</packaging>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>liveSense :: Service :: Markdown</name>
-	<description>Markdown service</description>
+	<description>Markdown service based on Pegdown</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -53,22 +54,24 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
-				<configuration>
+                <configuration>
 					<instructions>
 						<Export-Package>
 							org.liveSense.service.markdown.*;version=${project.version},
-							org.parboiled.*,
-							org.pegdown.*,
-							org.objectweb.asm.*
+                            org.pegdown.*;version=${pegdown.version}
 						</Export-Package>
+                        <!-- Now uses embedded pegdown and parboiled.
+                        waiting for OSGi versions for it.
+                        https://github.com/sirthias/pegdown/issues/62 and
+                        https://github.com/sirthias/parboiled/issues/50
+                        -->
+						<Embed-Dependency>
+							pegdown;inline=true, 
+							parboiled-core;inline=true, 
+							parboiled-java;inline=true, 
+							asm-all;inline=true
+						</Embed-Dependency>
 
-                        <Embed-Dependency>
-                            pegdown
-                        </Embed-Dependency>
-
-						<Import-Package>
-							*
-						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -76,8 +79,12 @@
 	</build>
 	<dependencies>
 		<dependency>
-    		<groupId>org.apache.felix</groupId>
-    		<artifactId>org.apache.felix.scr.annotations</artifactId>
+			<groupId>com.github.livesense</groupId>
+			<artifactId>org.liveSense.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr.annotations</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
@@ -92,41 +99,25 @@
 			<artifactId>org.apache.sling.commons.osgi</artifactId>
 		</dependency>
 		<dependency>
-	      	<groupId>com.github.livesense</groupId>
-			<artifactId>org.liveSense.core</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.sling</groupId>
 			<artifactId>org.apache.sling.api</artifactId>
 		</dependency>
 		<dependency>
-	      	<groupId>com.github.livesense</groupId>
-			<artifactId>org.liveSense.framework.cxf</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.pegdown</groupId>
 			<artifactId>pegdown</artifactId>
-			<version>1.1.0</version>
 		</dependency>
-		
-      	<dependency>
-      		<groupId>org.parboiled</groupId>
-      		<artifactId>parboiled-core</artifactId>
-      		<version>1.0.2</version>
-    	</dependency>
-    
-    	<dependency>
-      		<groupId>org.parboiled</groupId>
-      		<artifactId>parboiled-java</artifactId>
-      		<version>1.0.2</version>
-    	</dependency>
-
+		<dependency>
+			<groupId>org.parboiled</groupId>
+			<artifactId>parboiled-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.parboiled</groupId>
+			<artifactId>parboiled-core</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>asm</groupId>
 			<artifactId>asm-all</artifactId>
 			<version>3.3.1</version>
 		</dependency>
-
 	</dependencies>
 </project>
