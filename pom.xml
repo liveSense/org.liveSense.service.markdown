@@ -83,6 +83,11 @@
 			<artifactId>org.liveSense.core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.github.livesense</groupId>
+			<artifactId>org.liveSense.service.languageSelector</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
 		</dependency>
