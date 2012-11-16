@@ -2,6 +2,9 @@ package org.liveSense.service.markdown;
 
 import java.util.HashMap;
 
+import org.liveSense.core.wrapper.JcrPropertyWrapper;
+import org.liveSense.core.wrapper.JcrValueWrapper;
+
 
 /**
  * Service wrapper for JSTL
@@ -19,6 +22,16 @@ public class MarkdownWrapper extends HashMap<String, String> {
 	
 	@Override
 	public String get(Object markdown) {
-		return service.markdownToHtml((String)markdown);
+		String str = "";
+		if (markdown instanceof JcrPropertyWrapper) {
+			str = ((JcrPropertyWrapper)markdown).toString();
+		} else if (markdown instanceof JcrValueWrapper) {
+			str = ((JcrValueWrapper)markdown).toString();
+		} else if (markdown instanceof String) {
+			str = (String)markdown;
+		} else
+			str = markdown.toString();
+		
+		return service.markdownToHtml(str);
 	}
 }
