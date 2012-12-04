@@ -7,6 +7,8 @@ import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyOption;
 import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.liveSense.core.Configurator;
@@ -105,7 +107,7 @@ public class MarkdownServiceImpl implements MarkdownService {
 	public static final String PARAM_EXTENSIONS_SUPPRESS_ALL_HTML = "markdown.extensions.suppressallhtml";
 	public static final boolean DEFAULT_EXTENSIONS_SUPPRESS_ALL_HTML = false;
 
-	@Reference
+	@Reference(cardinality=ReferenceCardinality.MANDATORY_UNARY, policy=ReferencePolicy.DYNAMIC)
 	Configurator configurator;
 
 	/**
