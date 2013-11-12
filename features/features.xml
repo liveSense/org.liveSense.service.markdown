@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><features name="liveSense-${liveSense.version}-service-markdown" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+	<feature name="liveSense-service-markdown" version="${liveSense.service.markdown.version}" description="liveSense service markdown">
+		<feature>liveSense-core-base</feature>
+        <bundle>mvn:com.github.livesense/org.liveSense.service.markdown/${liveSense.service.markdown.version}</bundle>
+	</feature>
+</features>

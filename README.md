@@ -9,20 +9,30 @@ Markdown service based on Pegdown
 * org.pegdown.ast(1.1.0)
 
 ## OSGi Dependencies
-* __System Bundle - org.apache.felix.framework (3.0.8)__
+* __System Bundle - org.apache.felix.framework (4.0.3)__
+	* javax.xml.transform
 	* javax.xml.transform
 	* javax.xml.transform.sax
+	* javax.xml.transform.sax
+	* javax.xml.transform.stream
 	* javax.xml.transform.stream
 	* org.xml.sax
+	* org.xml.sax
+	* org.xml.sax.ext
 	* org.xml.sax.ext
 	* org.xml.sax.helpers
-* __Apache Felix Declarative Services - org.apache.felix.scr (1.6.0)__
-	* org.osgi.service.component
-* __Apache Sling Commons OSGi support - org.apache.sling.commons.osgi (2.1.0)__
+	* org.xml.sax.helpers
+* __Apache Sling Commons OSGi support - org.apache.sling.commons.osgi (2.2.0)__
 	* org.apache.sling.commons.osgi
 * __[liveSense :: Core - org.liveSense.core (2-SNAPSHOT)](http://github.com/liveSense/org.liveSense.core)__
 	* org.liveSense.core
-* __slf4j-api - slf4j.api (1.6.1)__
+	* org.liveSense.core.wrapper
+* __Apache Felix Declarative Services - org.apache.felix.scr (1.6.2)__
+	* org.osgi.service.component
+* __OPS4J Pax Logging - API - org.ops4j.pax.logging.pax-logging-api (1.7.0)__
+	* org.slf4j
+	* org.slf4j
+	* org.slf4j
 	* org.slf4j
 
 ## OSGi Embedded JARs
