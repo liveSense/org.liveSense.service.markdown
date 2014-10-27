@@ -90,6 +90,10 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.livesense</groupId>
+			<artifactId>org.liveSense.misc.jcrWrapper</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.livesense</groupId>
 			<artifactId>org.liveSense.service.languageSelector</artifactId>
 		</dependency>
 

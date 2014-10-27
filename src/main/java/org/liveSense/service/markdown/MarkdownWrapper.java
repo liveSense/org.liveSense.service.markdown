@@ -1,9 +1,9 @@
 package org.liveSense.service.markdown;
 
-import java.util.HashMap;
+import org.liveSense.misc.jcrWrapper.JcrPropertyWrapper;
+import org.liveSense.misc.jcrWrapper.JcrValueWrapper;
 
-import org.liveSense.core.wrapper.JcrPropertyWrapper;
-import org.liveSense.core.wrapper.JcrValueWrapper;
+import java.util.HashMap;
 
 
 /**
