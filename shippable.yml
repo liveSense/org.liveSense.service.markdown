@@ -14,5 +14,5 @@ install:
 after_failure:
   - curl -L http://mspanc.github.io/shippable-slack-notifier/notify.py -o /tmp/notify.py; python /tmp/notify.py --slack-url $SLACK_URL --message failure
 after_success:
-  - curl -L http://mspanc.github.io/shippable-slack-notifier/notify.py -o /tmp/notify.py; python /tmp/notify.py --slack-url $SLACK_URL --message failure
+  - curl -L http://mspanc.github.io/shippable-slack-notifier/notify.py -o /tmp/notify.py; python /tmp/notify.py --slack-url $SLACK_URL --message success
  
